@@ -3,6 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import MyDrawer from "../Drawer";
 
 import ChattingList from "../Chat/ChattingList";
+import chat from "../Chat/Chat";
 
 const Stack = createStackNavigator();
 function Chatting_Navigator() {
@@ -14,6 +15,13 @@ function Chatting_Navigator() {
         options={{
           headerLeft: () => <MyDrawer />,
           headerTitle: "채팅기록",
+        }}
+      />
+      <Stack.Screen
+        name="Chatting"
+        component={chat}
+        options={{
+          headerTitle: "채팅",
         }}
       />
     </Stack.Navigator>

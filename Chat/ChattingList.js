@@ -1,22 +1,42 @@
 import React from "react";
-import { View, StyleSheet, StatusBar, Button } from "react-native";
+import {
+  ScrollView,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+} from "react-native";
+
+const arr = [1, 2, 3];
 
 export default function ChattingList({ navigation }) {
+  const Item = ({ title }) => {
+    return (
+      <TouchableOpacity
+        style={styles.item_container}
+        onPress={() => navigation.navigate("Chatting", { name: title })}
+      >
+        <Text style={styles.item_text}>{title}</Text>
+      </TouchableOpacity>
+    );
+  };
+  const render = ({ item }) => <Item title={item} />;
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle={"dark-content"} />
-      <View style={styles.Content}>
-        <Button title="Press" onPress={() => navigation.navigate("Chatting")} />
-      </View>
-    </View>
+    <FlatList
+      keyExtractor={(item) => item.toString()}
+      data={arr}
+      renderItem={render}
+    />
   );
 }
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  item_container: {
+    borderBottomWidth: 1,
+    height: 100,
   },
-  Content: {
-    flex: 11,
+  item_text: {
+    textAlign: "center",
+    textAlignVertical: "center",
+    fontSize: 50,
   },
 });

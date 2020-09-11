@@ -13,28 +13,38 @@ import {
 } from "react-native";
 import MessageBubble from "./chatbuble";
 import { useDispatch, useSelector } from "react-redux";
+import { navigation } from "@react-navigation/native";
 
-const io = require("socket.io-client");
+import * as firebase from "firebase";
+require("firebase/database");
 
-const SocketEndpoint = "https://server0501.herokuapp.com/";
-
-const { width, height } = Dimensions.get("window");
-
-const socket = io(SocketEndpoint, {
-  transports: ["websocket"],
-});
+var firebaseConfig = {
+  apiKey: "AIzaSyBv65DnBNccas_8VimaHDvOjb_xAscuVr8",
+  authDomain: "coks-project.firebaseapp.com",
+  databaseURL: "https://coks-project.firebaseio.com",
+  projectId: "coks-project",
+  storageBucket: "coks-project.appspot.com",
+  messagingSenderId: "142458364491",
+  appId: "1:142458364491:web:ff8ad45c31be08c8d3e3ce",
+  measurementId: "G-4J3DKKHR4H",
+};
+firebase.initializeApp(firebaseConfig);
+firebase.analytics();
 
 let LastDate = 1;
 
-export default function chat({ navigation }) {
-  const name = "원석";
+export default function chat({ navigation, route }) {
   const todaydate = Date.now();
   const dispatch = useDispatch();
+  var name = "asd";
   const [text, setText] = useState("");
   const { msg } = useSelector((state) => ({
     msg: state.msg,
   }));
+  var room_name = route.params.name;
+
   socketUpdate();
+  socketconn();
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="default" barStyle="dark-content" />
@@ -84,27 +94,22 @@ export default function chat({ navigation }) {
   );
 
   function send() {
-    if (text !== "") {
-      socket.emit("send", {
-        name: name,
-        message: text,
-        date: todaydate,
-      });
-      dispatch({
-        type: "Update",
-        name: "익명",
-        message: text,
-        date: todaydate,
-      });
-      setText("");
-      scrolldown();
-    }
+    firebase
+      .database()
+      .ref("message/" + room_id)
+      .push({ name: "테스트", text: "테스트" });
   }
 
   function scrolldown() {
     setTimeout(() => {
       scroll.scrollToEnd({ animated: true });
     }, 100);
+  }
+  function socketconn() {
+    socket.emit("sendi"),
+      {
+        room_id: room_name,
+      };
   }
 
   function socketUpdate() {
