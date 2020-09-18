@@ -14,24 +14,10 @@ import {
 import MessageBubble from "./chatbuble";
 import { useDispatch, useSelector } from "react-redux";
 import { navigation } from "@react-navigation/native";
-
-import * as firebase from "firebase";
-require("firebase/database");
-
-var firebaseConfig = {
-  apiKey: "AIzaSyBv65DnBNccas_8VimaHDvOjb_xAscuVr8",
-  authDomain: "coks-project.firebaseapp.com",
-  databaseURL: "https://coks-project.firebaseio.com",
-  projectId: "coks-project",
-  storageBucket: "coks-project.appspot.com",
-  messagingSenderId: "142458364491",
-  appId: "1:142458364491:web:ff8ad45c31be08c8d3e3ce",
-  measurementId: "G-4J3DKKHR4H",
-};
-firebase.initializeApp(firebaseConfig);
-firebase.analytics();
-
+const { width, height } = Dimensions.get("window");
 let LastDate = 1;
+
+import firebaseSvc from "./firebasesvc";
 
 export default function chat({ navigation, route }) {
   const todaydate = Date.now();
@@ -94,10 +80,7 @@ export default function chat({ navigation, route }) {
   );
 
   function send() {
-    firebase
-      .database()
-      .ref("message/" + room_id)
-      .push({ name: "테스트", text: "테스트" });
+    firebaseSvc.dbsend(name, text, room_name);
   }
 
   function scrolldown() {
@@ -105,25 +88,9 @@ export default function chat({ navigation, route }) {
       scroll.scrollToEnd({ animated: true });
     }, 100);
   }
-  function socketconn() {
-    socket.emit("sendi"),
-      {
-        room_id: room_name,
-      };
-  }
+  function socketconn() {}
 
   function socketUpdate() {
-    socket.on("update", (data) => {
-      if (LastDate != data.date) {
-        dispatch({
-          type: "Update",
-          name: data.name,
-          message: data.message,
-          date: data.date,
-        });
-        LastDate = data.date;
-      }
-    });
     scrolldown();
   }
 }
